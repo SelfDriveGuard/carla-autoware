@@ -45,15 +45,64 @@ This will generate a `carla-autoware:latest` docker image.
 2. Run the `carla-autoware` image: 
 
 ```sh
-./run.sh
+pip3 install docker
+
+python run_docker.py
 ```
 
-This will start an interactive shell inside the container. To start the agent run the following command:
+This will start the container. To enter the container and get an interactive shell, run
 
 ```sh
-roslaunch carla_autoware_agent carla_autoware_agent.launch town:=Town01
+docker exec -it --user autoware {container_id} bash
+```
+
+Open two shells, run rosbridge in the first one
+
+```sh
+roslaunch rosbridge_server rosbridge_websocket.launch
+```
+run server in the second one
+
+```sh
+pip3 install websockets
+
+python3 ~/my_scripts/local_controller/local_controller_ws_server.py
 ```
 
 ## CARLA Autoware contents
 The [autoware-contents](https://bitbucket.org/carla-simulator/autoware-contents.git) repository contains additional data required to run Autoware with CARLA, including the point cloud maps, vector maps and configuration files.
 
+## Debug
+
+在local_controller目录下有`send_message.py`，可以对`local_controller_ws_server.py`发送命令，用于调试。
+
+本地运行需要安装Python依赖websockets。启动send_message
+
+```
+python ros_manager_debug.py
+```
+
+可以输入任意命令，观察local_controller_ws_server是否收到。
+
+特殊命令：
+
+- `run`: local_controller_ws_server会开启autoware和trace_generator
+- `target`: local_controller_ws_server会发送目标坐标
+- `stop`: local_controller_ws_server会停止autoware和trace_generator
+- `exit`: 退出ros_manager_debug
+
+## Rviz
+If you don't want to use Rviz which will run by default, open file `/home/autoware/carla-autoware/carla-autoware-agent/launch/carla_autoware_agent.launch` within the container and comment line 74-75. After that the end of the file shall look like
+
+```
+  ......(previous content)
+  <!--
+    ###################
+    ## Visualization ## 
+    ###################
+  -->
+  <!-- <arg name='rvizconfig' default='$(find carla_autoware_agent)/$(arg agent)/rviz/config.rviz'/>
+  <node name='rviz' pkg='rviz' type='rviz' args='-d $(arg rvizconfig)'/> -->
+
+</launch>
+```
