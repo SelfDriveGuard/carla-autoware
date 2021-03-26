@@ -21,7 +21,7 @@ class ControllerServer:
             data = msg['data']
             if cmd == "run":
                 os.system("nohup python /home/autoware/my_scripts/trace_generator/src/trace_generator/trace_generator.py >> /home/autoware/trace.log 2>&1 &")
-                launch_cmd = "nohup roslaunch carla_autoware_agent carla_autoware_agent.launch town:={} spawn_point:={},{},{},{},{},{} >> /home/autoware/launch.log 2>&1 &".format(data['town'],
+                launch_cmd = "nohup roslaunch carla_autoware_agent carla_autoware_agent.launch town:={} spawn_point:={},{},{},{},{},{} role_name:=ego >> /home/autoware/launch.log 2>&1 &".format(data['town'],
                                     data['x'],
                                     data['y'],
                                     data['z'],
