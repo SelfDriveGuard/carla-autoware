@@ -16,7 +16,7 @@ def run():
     CONTENTS_PATH = join(ROOT_PATH, "autoware-contents")
     SCRIPTS_PATH = join(ROOT_PATH, "scripts")
 
-    ros_container = client.containers.run("carla-autoware:latest",
+    ros_container = client.containers.run("registry.cn-beijing.aliyuncs.com/ad-test/carla-autoware-extern:1.0.1",
                                           detach=True,
                                           volumes={CONTENTS_PATH: {'bind': '/home/autoware/autoware-contents', 'mode': 'ro'},
                                                    SCRIPTS_PATH: {'bind': '/home/autoware/my_scripts', 'mode': 'rw'}},
@@ -29,6 +29,7 @@ def run():
                                           )
 
     print("Container id:{}".format(ros_container.short_id))
+    print("Command to enter container:\n docker exec -it --user autoware {} bash".format(ros_container.short_id))
 
 
 if __name__ == '__main__':
